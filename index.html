@@ -1,0 +1,62 @@
+<head>
+</head>
+
+<body>
+
+
+<h1>Enter the Address</h1>
+<form id="address_input">
+    <div>Street Number:<input type="int" name="street_number"></div>
+    <div>Street:<input type="text" name="street"></div>
+    <div>Borough<select type="text" name="borough">
+        <option>Bronx</option>
+        <option>Brooklyn</option>
+        <option>Manhattan</option>
+        <option>Staten Island</option>
+        <option>Queens</option>
+    </select></div>
+
+</form>
+
+ <button id="button" onclick="display_input()" value="submit">"submit"</button>
+
+<p id="output">
+
+</p>
+
+<script>
+function display_input(){
+    address_input = document.getElementById("address_input")
+    output = document.getElementById("output")
+
+    street_number = address_input.elements.street_number.value
+    street = address_input.elements.street.value
+    borough = address_input.elements.borough.value
+    violations = get_housing_violations(street_number,street,borough)
+    output.innerHTML = street_number+' '+street+', '+borough +violations[0].novdescription
+}
+
+function httpGet(theUrl)
+{
+    var xmlHttp = null;
+    xmlHttp = new XMLHttpRequest();
+    xmlHttp.open( "GET", theUrl, false );
+    xmlHttp.send( null );
+    return xmlHttp.responseText;
+}
+function get_housing_violations(street_number, street, borough){
+    return eval(httpGet(
+    "https://data.cityofnewyork.us/resource/wvxf-dwi5.json?"+
+    "&$where=housenumber=%27"+street_number+"%27"+
+    "AND%20boro=%27"+borough+"%27"+
+    "AND%20streetname=%27"+street+"%27"));
+    /*+
+    "$order=inspectiondate"+
+    "&$select=housenumber,steetname,zip,apartment,inspectiondate,novdescription"+
+    "+123/*street_number.toString()+*/
+    /*"AND%20within_circle%28location,"+lat+","+lng+","+radius+"%29"));*/
+}
+
+
+</script>
+</body>
